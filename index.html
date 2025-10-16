@@ -34,7 +34,7 @@
   <label for="tone">Tone preference (optional):</label>
   <input id="tone" placeholder="E.g., 'friendly, conversational' or 'formal, academic'" />
 
-  <button id="rewriteBtn" onclick="rewrite()">Refine & Personalize</button>
+  <button id="rewriteBtn">Refine & Personalize</button>
   <div id="status" style="margin-top: 12px; color: #555;"></div>
 
   <h3>Refined Output</h3>
@@ -63,17 +63,17 @@ async function rewrite() {
   document.getElementById("status").innerText = "Refining your text...";
 
   try {
-    const resp = await fetch("/api/apirewrite", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    text: userInput,
-    anecdote1,
-    anecdote2,
-    toneHint: "friendly, conversational",
-    extraDetail: ""
-  }),
-});
+    const resp = await fetch("/api/apirewrite", {  // <-- Vercel API endpoint
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text,
+        anecdote1,
+        anecdote2,
+        toneHint: tone || "friendly, conversational",
+        extraDetail
+      }),
+    });
 
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({ error: resp.statusText }));
@@ -95,8 +95,8 @@ async function rewrite() {
     document.getElementById("status").innerText = "";
   }
 }
+
+document.getElementById("rewriteBtn").addEventListener("click", rewrite);
 </script>
 </body>
-
 </html>
-
