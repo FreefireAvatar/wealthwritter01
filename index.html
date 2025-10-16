@@ -4,8 +4,8 @@
   <meta charset="utf-8"/>
   <title>WealthWriter — Ethical Text Enhancer</title>
   <style>
-    body { font-family: -apple-system, Arial, sans-serif; max-width: 900px; margin: 28px auto; padding: 0 16px; color: #111; line-height: 1.6; }
-    textarea, input { width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 12px; font-size: 15px; border: 1px solid #ddd; border-radius: 6px; }
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 28px auto; padding: 0 16px; color: #111; line-height: 1.6; }
+    textarea, input { width: 100%; padding: 12px; margin-bottom: 12px; font-size: 15px; border: 1px solid #ddd; border-radius: 6px; }
     label { font-weight: 600; display: block; margin-top: 12px; }
     button { padding: 12px 20px; border-radius: 6px; background: #0b76ef; color: white; border: none; cursor: pointer; font-size: 16px; }
     button:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -17,24 +17,24 @@
 </head>
 <body>
   <h1>WealthWriter — Ethical Text Enhancer</h1>
-  <p class="meta">Refine your writing with personal touches to make it feel natural. <span class="warning">Always edit manually after—do not use to deceive detection systems or violate policies.</span></p>
+  <p class="meta">Refine your writing with personal touches. <span class="warning">Always edit manually.</span></p>
 
-  <label for="inputText">Paste your text (required):</label>
-  <textarea id="inputText" placeholder="Paste your paragraph or essay here..." rows="8"></textarea>
+  <label for="inputText">Paste your text:</label>
+  <textarea id="inputText" rows="8"></textarea>
 
-  <label for="anecdote1">Personal detail 1 (required, one sentence):</label>
-  <input id="anecdote1" placeholder="E.g., 'I remember struggling with this concept in high school.'" />
+  <label for="anecdote1">Personal detail 1:</label>
+  <input id="anecdote1" />
 
-  <label for="anecdote2">Personal detail 2 (required, one sentence):</label>
-  <input id="anecdote2" placeholder="E.g., 'My friend once shared a similar story about their job.'" />
+  <label for="anecdote2">Personal detail 2:</label>
+  <input id="anecdote2" />
 
   <label for="extraDetail">Additional context (optional):</label>
-  <input id="extraDetail" placeholder="E.g., 'I feel strongly about this because...'" />
+  <input id="extraDetail" />
 
   <label for="tone">Tone preference (optional):</label>
-  <input id="tone" placeholder="E.g., 'friendly, conversational' or 'formal, academic'" />
+  <input id="tone" />
 
-  <button id="rewriteBtn">Refine & Personalize</button>
+  <button id="rewriteBtn" onclick="rewrite()">Refine & Personalize</button>
   <div id="status" style="margin-top: 12px; color: #555;"></div>
 
   <h3>Refined Output</h3>
@@ -55,7 +55,7 @@ async function rewrite() {
   const tone = document.getElementById("tone").value;
 
   if (!text.trim() || !anecdote1.trim() || !anecdote2.trim()) {
-    alert("Please provide text and two personal details for better results.");
+    alert("Please provide text and two personal details.");
     return;
   }
 
@@ -63,16 +63,10 @@ async function rewrite() {
   document.getElementById("status").innerText = "Refining your text...";
 
   try {
-    const resp = await fetch("/api/apirewrite", {  // <-- Vercel API endpoint
+    const resp = await fetch("/api/apirewrite", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text,
-        anecdote1,
-        anecdote2,
-        toneHint: tone || "friendly, conversational",
-        extraDetail
-      }),
+      body: JSON.stringify({ text, anecdote1, anecdote2, toneHint: tone, extraDetail })
     });
 
     if (!resp.ok) {
@@ -87,6 +81,7 @@ async function rewrite() {
     document.getElementById("suggestions").innerHTML = sug.length
       ? "<ol>" + sug.map(s => `<li>${s}</li>`).join("") + "</ol>"
       : "No suggestions available.";
+
   } catch (err) {
     alert("Error: " + err.message);
     console.error(err);
@@ -95,8 +90,6 @@ async function rewrite() {
     document.getElementById("status").innerText = "";
   }
 }
-
-document.getElementById("rewriteBtn").addEventListener("click", rewrite);
 </script>
 </body>
 </html>
