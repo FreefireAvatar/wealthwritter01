@@ -63,17 +63,17 @@ async function rewrite() {
   document.getElementById("status").innerText = "Refining your text...";
 
   try {
-    const resp = await fetch("/api/rewrite", {
+    const resp = await fetch("/api/apirewrite", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    text: userInput, 
-    anecdote1, 
-    anecdote2, 
-    toneHint,
-    extraDetail
+    text: userInput,
+    anecdote1,
+    anecdote2,
+    toneHint: "friendly, conversational",
+    extraDetail: ""
   }),
-})
+});
 
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({ error: resp.statusText }));
@@ -99,3 +99,4 @@ async function rewrite() {
 </body>
 
 </html>
+
