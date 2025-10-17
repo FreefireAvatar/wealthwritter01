@@ -1,8 +1,11 @@
+
+
+
 // /api/apirewrite.js
 // Install dependencies: npm install openai
 
 import OpenAI from "openai";
-
+console.log("OPENAI_API_KEY exists:", !!process.env.OPENAI_API_KEY);
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 function addHumanTexture(text) {
@@ -75,4 +78,5 @@ ${text}
     res.status(500).json({ error: "Rewrite failed", details: String(err) });
   }
 }
+
 
